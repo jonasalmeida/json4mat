@@ -1,0 +1,166 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      --><title>JSON4MAT</title><meta name="generator" content="MATLAB 7.10"><meta name="date" content="2010-04-04"><meta name="m-file" content="json4mat_pub"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>JSON4MAT</h1><!--introduction--><p>Jonas Almeida, April 2010</p><p>This manual was generated automatically by running pub.m .</p><p>JSON strings into (json2mat) and from (mat2json) Matlab structures. The name, "...4MAT", is a wink to an old, outdated but similalry minded XML toolbox XML4MAT where loose typing was argued for as being closer to Matlab's own loose assignment of types within a mat structure (<a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787">http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787</a>)</p><p>This is the first version of JSON4MAT was developed specifically for COUCH4MAT (<a href="http://couch4mat.googlecode.com)">http://couch4mat.googlecode.com)</a>, a tbox developed to help with interoperability with CouchDB. A reflection of the idea of loose typing and dimensionality natural to Matlab environments is ported to the reading and writting of numerical matrices into JSON.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">JSON2MAT</a></li><li><a href="#2">Dimensionality in numerical arrays</a></li><li><a href="#3">Non-numerial arrays</a></li><li><a href="#4">Unmatched dimensionality</a></li><li><a href="#5">MAT2JSON</a></li></ul></div><h2>JSON2MAT<a name="1"></a></h2><p>JavaScript Object Notation (JSON) has a much looser and smaller set of data types that Matlab. Also, unlike XML it does not explicitly make room for attributes to be defined to additionally characterize a data element such as size and class. As a consequence the JSON strings can be interpreted just as dynamically:</p><pre class="codeinput">json=<span class="string">'{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}'</span>;
+mat=json2mat(json)
+</pre><pre class="codeoutput">
+mat = 
+
+    lele: 2
+    lili: 4
+    lolo: {[1]  [2]  [1x1 struct]}
+
+</pre><h2>Dimensionality in numerical arrays<a name="2"></a></h2><p>The array of pairs of numbers suggests a 3x2 matrix and indeed JSON2MAT made that conversion:</p><pre class="codeinput">mat.lolo{3}.bubu
+</pre><pre class="codeoutput">
+ans =
+
+     1     2
+     3     4
+     5     6
+
+</pre><h2>Non-numerial arrays<a name="3"></a></h2><p>When there are non-numerical elements in a JSON array the array of arrays will be directly converted into a Matlab cell of cells. Notice the last numerical element of bubu is now "a".</p><pre class="codeinput">json2mat(<span class="string">'{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,"a"]]}]}'</span>);
+ans.lolo{3}
+</pre><pre class="codeoutput">
+ans = 
+
+    lulu: 5
+    bubu: {[1 2]  [3 4]  {1x2 cell}}
+
+</pre><h2>Unmatched dimensionality<a name="4"></a></h2><p>The interpretation of arrays of arrays of numbers as corresponding to embedded dimensionality is performed by a try / catch command. Therefore, if teh dimensions don't match the cells of cells will be returned instead. In a future version maybe dimensionality in cell arrays will be coded in JSON2MAT as well, but presently that is only attempted for numerical arrays.</p><pre class="codeinput">ans=json2mat(<span class="string">'{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6,7]]}]}'</span>);
+ans.lolo{3}
+</pre><pre class="codeoutput">
+ans = 
+
+    lulu: 5
+    bubu: {[1 2]  [3 4]  [5 6 7]}
+
+</pre><h2>MAT2JSON<a name="5"></a></h2><p>Since the original motivation for this toolbox was to read entries from a CouchDB deployment, the conversion of mat into json was designed with a single criterion in mind: that the reverse operation JSON2MAT would return the original mat structure. Accordingly, if we return to the mat structure generated from the json string produced under JSON2MAT above, one can confirm that the same string is returned from mat:</p><pre class="codeinput">mat2json(mat)
+</pre><pre class="codeoutput">
+ans =
+
+{"lele":2,"lili":4,"lolo":[1,2,{"lulu":5,"bubu":[[1,2],[3,4],[5,6]]}]}
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.10<br></p></div><!--
+##### SOURCE BEGIN #####
+%% JSON4MAT
+%
+% Jonas Almeida, April 2010
+%
+% This manual was generated automatically by running pub.m .
+%
+% JSON strings into (json2mat) and from (mat2json) Matlab structures. The
+% name, "...4MAT", is a wink to an old, outdated but similalry minded XML
+% toolbox XML4MAT where loose typing was argued for as being closer to
+% Matlab's own loose assignment of types within a mat structure
+% (http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787)
+%
+% This is the first version of JSON4MAT was developed specifically for
+% COUCH4MAT (http://couch4mat.googlecode.com), a tbox developed to help
+% with interoperability with CouchDB. A reflection of the idea of loose
+% typing and dimensionality natural to Matlab environments is ported to the
+% reading and writting of numerical matrices into JSON.
+%
+%% JSON2MAT
+%
+% JavaScript Object Notation (JSON) has a much looser and smaller set of
+% data types that Matlab. Also, unlike XML it does not explicitly make room
+% for attributes to be defined to additionally characterize a data element
+% such as size and class. As a consequence the JSON strings can be
+% interpreted just as dynamically:
+json='{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}';
+mat=json2mat(json)
+%% Dimensionality in numerical arrays
+%
+% The array of pairs of numbers suggests a 3x2 matrix and indeed JSON2MAT
+% made that conversion:
+mat.lolo{3}.bubu
+%% Non-numerial arrays
+% When there are non-numerical elements in a JSON array the array of arrays
+% will be directly converted into a Matlab cell of cells. Notice the last
+% numerical element of bubu is now "a".
+json2mat('{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,"a"]]}]}');
+ans.lolo{3}
+%% Unmatched dimensionality
+%
+% The interpretation of arrays of arrays of numbers as corresponding to
+% embedded dimensionality is performed by a try / catch command. Therefore,
+% if teh dimensions don't match the cells of cells will be returned
+% instead. In a future version maybe dimensionality in cell arrays will be
+% coded in JSON2MAT as well, but presently that is only attempted for
+% numerical arrays.
+ans=json2mat('{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6,7]]}]}');
+ans.lolo{3}
+%% MAT2JSON
+%
+% Since the original motivation for this toolbox was to read entries from a
+% CouchDB deployment, the conversion of mat into json was designed with a
+% single criterion in mind: that the reverse operation JSON2MAT would
+% return the original mat structure. Accordingly, if we return to the mat
+% structure generated from the json string produced under JSON2MAT above,
+% one can confirm that the same string is returned from mat:
+mat2json(mat)
+
+##### SOURCE END #####
+--></body></html>
