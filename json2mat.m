@@ -28,7 +28,12 @@ else
         JJ=regexp(J,'\"(.*)\"','tokens');
         M=JJ{1}{1};
     else %numeric value
-        M=str2num(J); % is number
+        j=regexp(J,'[\d\.\E\e]');
+        if length(j)==length(J) %it is a number
+            M=str2num(J); % is number
+        else
+            M=json2mat(['"',J,'"']); % not a number after all
+        end
     end
 end
 

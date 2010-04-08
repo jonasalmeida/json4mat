@@ -55,3 +55,18 @@ ans.lolo{3}
 % structure generated from the json string produced under JSON2MAT above,
 % one can confirm that the same string is returned from mat:
 mat2json(mat)
+%% Non-standard convinience
+%
+% There are some additional simplifications of JSON that are supported by 
+% this parser and may come handy even if they are not supported by standard
+% js engines. For example the type of a=1 and b="1" is recognized as it
+% should. It is less clear what to do with 
+%
+%         {a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}
+%
+% even if it pretty clear that d should have been noted as "d". This gets a
+% bit trickier for d, e, f and g but you can confirm that this parser tries
+% to treat it as numeric and if it doesn't work it assumes you forgot the ""
+%
+json2mat('{a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}')
+
