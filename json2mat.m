@@ -90,6 +90,7 @@ end
 
 if exist('y')~=1
     y=eval(['{',strrep(x,'"',''''),'}']);
+    try;y=cell2mat(y);end
 end
 
 %look for embeded objects and arrays
