@@ -93,9 +93,13 @@ if exist('tag') %catching numeric content
     end
 end
 
-if exist('y')~=1
-    y=eval(['{',strrep(x,'"',''''),'}']);
-    try;y=cell2mat(y);end
+if exist('y')~=1    
+    if sum(x=='"')==0
+        y=eval(['{',x,'}']);
+        try;y=cell2mat(y')';end
+    else
+        y=eval(['{',strrep(x,'"',''''),'}']);
+    end
 end
 
 %look for embeded objects and arrays
