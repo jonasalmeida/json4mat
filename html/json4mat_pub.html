@@ -6,7 +6,7 @@
    <!--
 This HTML is auto-generated from an M-file.
 To make changes, update the M-file and republish this document.
-      --><title>JSON4MAT</title><meta name="generator" content="MATLAB 7.10"><meta name="date" content="2010-04-08"><meta name="m-file" content="json4mat_pub"><style type="text/css">
+      --><title>JSON4MAT</title><meta name="generator" content="MATLAB 7.10"><meta name="date" content="2010-04-09"><meta name="m-file" content="json4mat_pub"><style type="text/css">
 
 body {
   background-color: white;
@@ -93,7 +93,7 @@ ans.lolo{3}
 ans = 
 
     lulu: 5
-    bubu: [1 2 3 4 5 6 7]
+    bubu: {[1 2]  [3 4]  [5 6 7]}
 
 </pre><h2>MAT2JSON<a name="5"></a></h2><p>Since the original motivation for this toolbox was to read entries from a CouchDB deployment, the conversion of mat into json was designed with a single criterion in mind: that the reverse operation JSON2MAT would return the original mat structure. Accordingly, if we return to the mat structure generated from the json string produced under JSON2MAT above, one can confirm that the same string is returned from mat:</p><pre class="codeinput">mat2json(mat)
 </pre><pre class="codeoutput">

@@ -3,7 +3,7 @@ function M=json2mat(J)
 %JSON2MAT converts a javscript data object (JSON) into a Matlab structure
 %         using s recursive approach. J can also be a file name.
 %
-%Example: lala=json2mat('{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}') 
+%Example: lala=json2mat('{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}')
 %         notice lala.lolo{3}.bubu is read as a 2D matrix.
 %
 % Jonas Almeida, March 2010
@@ -15,18 +15,32 @@ if exist(J)==2 % if J is a filename
         J=[J,fgetl(fid)];
     end
     fclose(fid);
-    M=json2mat(J);  
+    M=json2mat(J);
 else
     J1=regexprep(J(1:min([5,length(J)])),'\s',''); %despaced start of J string
-    if J1(1)=='{' %extract structures
+    if isempty(J1)
+        M='';
+    elseif J1(1)=='{' %extract structures
         JJ=regexp(J,'\{(.*)\}','tokens');
-        M=extract_struct(JJ{1}{1});
+        if ~isempty(JJ{1}{1})
+            M=extract_struct(JJ{1}{1});
+        else
+            M={};
+        end
     elseif J1(1)=='[' %extract cells
         JJ=regexp(J,'\[(.*)\]','tokens');
-        M=extract_cell(JJ{1}{1});
+        if ~isempty(JJ{1}{1})
+            M=extract_cell(JJ{1}{1});
+        else
+            M=[];
+        end
     elseif J1(1)=='"' %literal string
         JJ=regexp(J,'\"(.*)\"','tokens');
-        M=JJ{1}{1};
+        if ~isempty(JJ{1}{1})
+            M=JJ{1}{1};
+        else
+            M='';
+        end
     else %numeric value
         j=regexp(J,'[\d\.\E\e]');
         if length(j)==length(J) %it is a number
@@ -58,7 +72,7 @@ for i=1:n
     t{1}{1}=strrep(t{1}{1},'"','');
     if t{1}{1}(1)=='_' %JSON allows for fieldnames starting with "_"
         t{1}{1}(1)=''; % this line will cause hard to track problems if the same object has 2 attributes with the same name but one of them starting with "_"
-    end        
+    end
     if regexp(t{1}{2},'tag{\d+}')
         y.(t{1}{1})=eval(t{1}{2});
     else
@@ -93,7 +107,7 @@ if exist('tag') %catching numeric content
     end
 end
 
-if exist('y')~=1    
+if exist('y')~=1
     if sum(x=='"')==0
         y=eval(['{',x,'}']);
         try;y=cell2mat(y')';end
