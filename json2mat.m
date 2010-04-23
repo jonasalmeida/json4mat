@@ -22,21 +22,21 @@ else
         M='';
     elseif J1(1)=='{' %extract structures
         JJ=regexp(J,'\{(.*)\}','tokens');
-        if ~isempty(JJ{1}{1})
+        if ~isempty(JJ)
             M=extract_struct(JJ{1}{1});
         else
             M={};
         end
     elseif J1(1)=='[' %extract cells
         JJ=regexp(J,'\[(.*)\]','tokens');
-        if ~isempty(JJ{1}{1})
+        if ~isempty(JJ)
             M=extract_cell(JJ{1}{1});
         else
             M=[];
         end
     elseif J1(1)=='"' %literal string
         JJ=regexp(J,'\"(.*)\"','tokens');
-        if ~isempty(JJ{1}{1})
+        if ~isempty(JJ)
             M=JJ{1}{1};
         else
             M='';

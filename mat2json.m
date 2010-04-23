@@ -1,4 +1,4 @@
-function J=json2mat(M,F)
+function J=mat2json(M,F)
 
 %JSON2MAT converts a Matlab structure into a javscript data object (JSON).
 %         M can also be a file name. In teh spirit of fast prototyping 
@@ -15,7 +15,7 @@ function J=json2mat(M,F)
 switch class(M)
     case 'struct'
         J='{';
-        f=fields(M);
+        f=fieldnames(M);
         for i=1:length(f)
             J=[J,'"',f{i},'":',mat2json(M.(f{i})),','];
         end
