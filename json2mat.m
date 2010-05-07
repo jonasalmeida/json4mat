@@ -59,7 +59,13 @@ for i=n:-1:1
     tag{i}=json2mat(x(indOC(i,1):indOC(i,2)));
     x=[x(1:indOC(i,1)-1),'tag{',num2str(i),'}',x(indOC(i,2)+1:end)];
 end
-
+%detag nested structures next
+indOC=extract_embed(x,'{','}');
+m=size(indOC,1);
+for i=n+m:-1:n+1
+    tag{i}=json2mat(x(indOC(i,1):indOC(i,2)));
+    x=[x(1:indOC(i,1)-1),'tag{',num2str(i),'}',x(indOC(i,2)+1:end)];
+end
 
 a=regexp(x,'[^:,]+:[^,]+');
 n=length(a);
@@ -73,6 +79,7 @@ for i=1:n
     if t{1}{1}(1)=='_' %JSON allows for fieldnames starting with "_"
         t{1}{1}(1)=''; % this line will cause hard to track problems if the same object has 2 attributes with the same name but one of them starting with "_"
     end
+    t{1}{1}=regexprep(t{1}{1},'\W','_'); %for example to deal with couch attachements
     if regexp(t{1}{2},'tag{\d+}')
         y.(t{1}{1})=eval(t{1}{2});
     else
@@ -128,7 +135,7 @@ indOpen=[indOpen,ones(length(indOpen),1)];
 indClose=strfind(x,tagClose)';
 indClose=[indClose,-ones(length(indClose),1)];
 indOpenClose=[indOpen;indClose];
-[~,Ind]=sort(indOpenClose(:,1));
+[lala,Ind]=sort(indOpenClose(:,1));
 indOpenClose=indOpenClose(Ind,:);
 n=size(indOpenClose,1);
 for i=2:n % add one for open, take one for close
