@@ -57,15 +57,19 @@ indOC=extract_embed(x,'[',']');
 n=size(indOC,1);
 for i=n:-1:1
     tag{i}=json2mat(x(indOC(i,1):indOC(i,2)));
-    x=[x(1:indOC(i,1)-1),'tag{',num2str(i),'}',x(indOC(i,2)+1:end)];
+    x=[x(1:indOC(i,1)-1),'tag~<',num2str(i),'>~',x(indOC(i,2)+1:end)];
 end
 %detag nested structures next
 indOC=extract_embed(x,'{','}');
 m=size(indOC,1);
 for i=n+m:-1:n+1
-    tag{i}=json2mat(x(indOC(i,1):indOC(i,2)));
-    x=[x(1:indOC(i,1)-1),'tag{',num2str(i),'}',x(indOC(i,2)+1:end)];
+    j=i-n;
+    tag{i}=json2mat(x(indOC(j,1):indOC(j,2)));
+    x=[x(1:indOC(j,1)-1),'tag{',num2str(i),'}',x(indOC(j,2)+1:end)];
 end
+
+x=strrep(x,'~<','{');
+x=strrep(x,'>~','}');
 
 a=regexp(x,'[^:,]+:[^,]+');
 n=length(a);
