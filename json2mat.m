@@ -1,4 +1,4 @@
-function M=json2mat(J)
+function M=json2mat(J,tag)
 
 %JSON2MAT converts a javscript data object (JSON) into a Matlab structure
 %         using s recursive approach. J can also be a file name.
@@ -8,6 +8,9 @@ function M=json2mat(J)
 %
 % Jonas Almeida, March 2010
 
+if exist('tag')~=1
+    tag={};
+end
 if exist(J)==2 % if J is a filename
     fid=fopen(J,'r');
     J='';
@@ -23,7 +26,7 @@ else
     elseif J1(1)=='{' %extract structures
         JJ=regexp(J,'\{(.*)\}','tokens');
         if ~isempty(JJ)
-            M=extract_struct(JJ{1}{1});
+            M=extract_struct(JJ{1}{1},tag);
         else
             M={};
         end
@@ -51,7 +54,7 @@ else
     end
 end
 
-function y=extract_struct(x)
+function y=extract_struct(x,tag)
 %detag arrays first
 indOC=extract_embed(x,'[',']');
 n=size(indOC,1);
@@ -64,7 +67,7 @@ indOC=extract_embed(x,'{','}');
 m=size(indOC,1);
 for i=n+m:-1:n+1
     j=i-n;
-    tag{i}=json2mat(x(indOC(j,1):indOC(j,2)));
+    tag{i}=json2mat(x(indOC(j,1):indOC(j,2)),tag);
     x=[x(1:indOC(j,1)-1),'tag{',num2str(i),'}',x(indOC(j,2)+1:end)];
 end
 
