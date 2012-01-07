@@ -45,7 +45,7 @@ else
             M='';
         end
     else %numeric value
-        j=regexp(J,'[\d\.\E\e]');
+        j=regexp(J,'[\s*-\d\.\E\e]');
         if length(j)==length(J) %it is a number
             M=str2num(J); % is number
         else
