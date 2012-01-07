@@ -55,7 +55,7 @@ ans.lolo{3}
 % structure generated from the json string produced under JSON2MAT above,
 % one can confirm that the same string is returned from mat:
 mat2json(mat)
-%% Non-standard convinience
+%% Non-standard convenience
 %
 % There are some additional simplifications of JSON that are supported by 
 % this parser and may come handy even if they are not supported by standard
@@ -69,4 +69,10 @@ mat2json(mat)
 % to treat it as numeric and if it doesn't work it assumes you forgot the ""
 %
 json2mat('{a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}')
+
+%% Contributions by others
+% Fixing trouble with negative numbers, solution by by neeraj.kanhere,
+% see http://code.google.com/p/json4mat/issues/detail?id=4&can=1,
+% testing it
+json2mat(mat2json(-123.45))
 

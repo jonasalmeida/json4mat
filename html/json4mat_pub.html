@@ -4,9 +4,9 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
-This HTML is auto-generated from an M-file.
-To make changes, update the M-file and republish this document.
-      --><title>JSON4MAT</title><meta name="generator" content="MATLAB 7.10"><meta name="date" content="2010-05-12"><meta name="m-file" content="json4mat_pub"><style type="text/css">
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>JSON4MAT</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-01-07"><meta name="DC.source" content="json4mat_pub.m"><style type="text/css">
 
 body {
   background-color: white;
@@ -62,7 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h1>JSON4MAT</h1><!--introduction--><p>Jonas Almeida, April 2010</p><p>This manual was generated automatically by running pub.m .</p><p>JSON strings into (json2mat) and from (mat2json) Matlab structures. The name, "...4MAT", is a wink to an old, outdated but similalry minded XML toolbox XML4MAT where loose typing was argued for as being closer to Matlab's own loose assignment of types within a mat structure (<a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787">http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787</a>)</p><p>This is the first version of JSON4MAT was developed specifically for COUCH4MAT (<a href="http://couch4mat.googlecode.com)">http://couch4mat.googlecode.com)</a>, a tbox developed to help with interoperability with CouchDB. A reflection of the idea of loose typing and dimensionality natural to Matlab environments is ported to the reading and writting of numerical matrices into JSON.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">JSON2MAT</a></li><li><a href="#2">Dimensionality in numerical arrays</a></li><li><a href="#3">Non-numerial arrays</a></li><li><a href="#4">Unmatched dimensionality</a></li><li><a href="#5">MAT2JSON</a></li><li><a href="#6">Non-standard convinience</a></li></ul></div><h2>JSON2MAT<a name="1"></a></h2><p>JavaScript Object Notation (JSON) has a much looser and smaller set of data types that Matlab. Also, unlike XML it does not explicitly make room for attributes to be defined to additionally characterize a data element such as size and class. As a consequence the JSON strings can be interpreted just as dynamically:</p><pre class="codeinput">json=<span class="string">'{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}'</span>;
+  </style></head><body><div class="content"><h1>JSON4MAT</h1><!--introduction--><p>Jonas Almeida, April 2010</p><p>This manual was generated automatically by running pub.m .</p><p>JSON strings into (json2mat) and from (mat2json) Matlab structures. The name, "...4MAT", is a wink to an old, outdated but similalry minded XML toolbox XML4MAT where loose typing was argued for as being closer to Matlab's own loose assignment of types within a mat structure (<a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787">http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.84.9787</a>)</p><p>This is the first version of JSON4MAT was developed specifically for COUCH4MAT (<a href="http://couch4mat.googlecode.com)">http://couch4mat.googlecode.com)</a>, a tbox developed to help with interoperability with CouchDB. A reflection of the idea of loose typing and dimensionality natural to Matlab environments is ported to the reading and writting of numerical matrices into JSON.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">JSON2MAT</a></li><li><a href="#2">Dimensionality in numerical arrays</a></li><li><a href="#3">Non-numerial arrays</a></li><li><a href="#4">Unmatched dimensionality</a></li><li><a href="#5">MAT2JSON</a></li><li><a href="#6">Non-standard convenience</a></li><li><a href="#7">Contributions by others</a></li></ul></div><h2>JSON2MAT<a name="1"></a></h2><p>JavaScript Object Notation (JSON) has a much looser and smaller set of data types that Matlab. Also, unlike XML it does not explicitly make room for attributes to be defined to additionally characterize a data element such as size and class. As a consequence the JSON strings can be interpreted just as dynamically:</p><pre class="codeinput">json=<span class="string">'{lele:2,lili:4,lolo:[1,2,{lulu:5,bubu:[[1,2],[3,4],[5,6]]}]}'</span>;
 mat=json2mat(json)
 </pre><pre class="codeoutput">
 mat = 
@@ -101,7 +101,7 @@ ans =
 
 {"lele":2,"lili":4,"lolo":[1,2,{"lulu":5,"bubu":[[1,2],[3,4],[5,6]]}]}
 
-</pre><h2>Non-standard convinience<a name="6"></a></h2><p>There are some additional simplifications of JSON that are supported by this parser and may come handy even if they are not supported by standard js engines. For example the type of a=1 and b="1" is recognized as it should. It is less clear what to do with</p><pre>       {a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}</pre><p>even if it pretty clear that d should have been noted as "d". This gets a bit trickier for d, e, f and g but you can confirm that this parser tries to treat it as numeric and if it doesn't work it assumes you forgot the ""</p><pre class="codeinput">json2mat(<span class="string">'{a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}'</span>)
+</pre><h2>Non-standard convenience<a name="6"></a></h2><p>There are some additional simplifications of JSON that are supported by this parser and may come handy even if they are not supported by standard js engines. For example the type of a=1 and b="1" is recognized as it should. It is less clear what to do with</p><pre>       {a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}</pre><p>even if it pretty clear that d should have been noted as "d". This gets a bit trickier for d, e, f and g but you can confirm that this parser tries to treat it as numeric and if it doesn't work it assumes you forgot the ""</p><pre class="codeinput">json2mat(<span class="string">'{a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}'</span>)
 </pre><pre class="codeoutput">
 ans = 
 
@@ -110,11 +110,17 @@ ans =
     c: 'd'
     d: [1 2 3]
     e: 'a b'
-    f: '1 2'
+    f: [1 2]
     g: {'1'  [1]  [100]}
 
+</pre><h2>Contributions by others<a name="7"></a></h2><p>Fixing trouble with negative numbers, solution by by neeraj.kanhere, see <a href="http://code.google.com/p/json4mat/issues/detail?id=4&amp;can=1">http://code.google.com/p/json4mat/issues/detail?id=4&amp;can=1</a>, testing it</p><pre class="codeinput">json2mat(mat2json(-123.45))
+</pre><pre class="codeoutput">
+ans =
+
+ -123.4500
+
 </pre><p class="footer"><br>
-      Published with MATLAB&reg; 7.10<br></p></div><!--
+      Published with MATLAB&reg; 7.13<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% JSON4MAT
 %
@@ -173,7 +179,7 @@ ans.lolo{3}
 % structure generated from the json string produced under JSON2MAT above,
 % one can confirm that the same string is returned from mat:
 mat2json(mat)
-%% Non-standard convinience
+%% Non-standard convenience
 %
 % There are some additional simplifications of JSON that are supported by 
 % this parser and may come handy even if they are not supported by standard
@@ -187,6 +193,12 @@ mat2json(mat)
 % to treat it as numeric and if it doesn't work it assumes you forgot the ""
 %
 json2mat('{a:1,b:"1",c:d,d:[1 2 3],e:a b,f:1 2,g:["1",1,1E2]}')
+
+%% Contributions by others
+% Fixing trouble with negative numbers, solution by by neeraj.kanhere,
+% see http://code.google.com/p/json4mat/issues/detail?id=4&can=1,
+% testing it
+json2mat(mat2json(-123.45))
 
 
 ##### SOURCE END #####
